@@ -1,3 +1,14 @@
+
+package cavedweller;
+
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.KeyEvent;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,15 +20,21 @@
  * @author 801420
  */
 public class Caveman {
-    private final String name;
-    private int x, y;
+    private int x, y, height, width, vx, vy;
     private int health;
+    public Rectangle bounds;
+    private Color color;
+    private final int SPEED = 10;
+    public boolean exist = true;
             
-    public Caveman(String name, Cave cave) {
-        this.name = name;
-        this.x = (int)(Math.random() * cave.getWidth());
-        this.y = (int)(Math.random() * cave.getHeight());
+    public Caveman(Cave cave) {
+        this.x = (int)(Math.random() * cave.w);
+        this.y = (int)(Math.random() * cave.h);
         this.health = (int)(Math.random() * 100);
+        this.width = 60;
+        this.height = 60;
+        this.bounds = new Rectangle(this.x, this.y, this.width, this.height);
+        this.color = Color.BLUE;       
     }
     
     public int getX() {
@@ -53,9 +70,35 @@ public class Caveman {
         }
     }
     
-    public void moveback(BackToStart bts) {
-        System.out.println("You're at the center of the cave!");
+    public void update() {
+        this.x += vx;
+        this.y += vy;
+        this.bounds = new Rectangle(this.x, this.y, this.width, this.height);
     }
+    
+    public void stop() {
+        this.vx = 0;
+        this.vy = 0;
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(this.color);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.fill(bounds);
+    }
+    
+    public void move(String direction) {        
+        if (direction.equals("right"))
+            vx = SPEED;
+        else if (direction.equals("left"))
+            vx = -SPEED;
+        else if (direction.equals("up"))
+            vy = -SPEED;
+        else if (direction.equals("down"))
+            vy = SPEED;
+    }
+    
+  
     
     public void killwall(KillWall wall) {
         health -= wall.getStrength();
